@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 export interface Result {
@@ -26,7 +25,7 @@ const TimePassedIcon: React.FC<{className: string}> = ({ className }) => (
 
 const ResultDisplay: React.FC<ResultDisplayProps> = ({ result }) => {
   return (
-    <div className="mt-8 pt-6 border-t-2 border-gray-100 animate-fade-in">
+    <div className="mt-8 pt-6 border-t-2 border-gray-100">
         <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">תוצאות החישוב</h2>
         <div className="space-y-6 bg-slate-50 p-6 rounded-lg">
             <div className="flex items-center space-x-4 space-x-reverse">
@@ -54,15 +53,6 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result }) => {
                 <p className="text-sm text-gray-500 italic mt-1">{result.explanation}</p>
             </div>
         </div>
-        <style>{`
-            @keyframes fade-in {
-                from { opacity: 0; transform: translateY(10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .animate-fade-in {
-                animation: fade-in 0.5s ease-out forwards;
-            }
-        `}</style>
     </div>
   );
 };
