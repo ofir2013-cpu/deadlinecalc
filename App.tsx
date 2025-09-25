@@ -102,7 +102,6 @@ const App: React.FC = () => {
         nonReckonableExplanation = ` הדד-ליין נדחה ב-${nonReckonableDurationDays} ימים נוספים בשל התקופה הבלתי נמנית שהוזנה.`;
     }
 
-
     const cutoffDate = new Date('2026-01-01');
     cutoffDate.setHours(0, 0, 0, 0);
 
@@ -112,15 +111,26 @@ const App: React.FC = () => {
     let baseDeadline: Date;
     let baseExplanation: string;
 
-    const potentialDeadlineTwoYears = new Date(startDate);
-    potentialDeadlineTwoYears.setFullYear(potentialDeadlineTwoYears.getFullYear() + 2);
-
-    if (potentialDeadlineTwoYears.getTime() < cutoffDate.getTime()) {
-      baseDeadline = potentialDeadlineTwoYears;
-      baseExplanation = "הדד-ליין הוא שנתיים לאחר מועד ההתחלה, מכיוון שהוא חל לפני 1.1.2026.";
+    if (startDate.getTime() >= cutoffDate.getTime()) {
+        // Rule 1: Start date is on or after 1.1.2026 -> 1.5 years deadline
+        baseDeadline = new Date(startDate);
+        baseDeadline.setMonth(baseDeadline.getMonth() + 18);
+        baseExplanation = "הדד-ליין הוא שנה וחצי לאחר מועד ההתחלה, מכיוון שמועד ההתחלה חל ב-1.1.2026 או לאחריו.";
     } else {
-      baseDeadline = cutoffDate;
-      baseExplanation = "הדד-ליין נקבע ל-1.1.2026, מכיוון שחישוב של שנתיים ממועד ההתחלה היה חורג מתאריך זה.";
+        // Rule 2: Start date is before 1.1.2026
+        const potentialDeadlineTwoYears = new Date(startDate);
+        potentialDeadlineTwoYears.setFullYear(potentialDeadlineTwoYears.getFullYear() + 2);
+
+        if (potentialDeadlineTwoYears.getTime() < cutoffDate.getTime()) {
+            // Sub-rule 2a: 2-year deadline is also before 1.1.2026 -> 2 years deadline
+            baseDeadline = potentialDeadlineTwoYears;
+            baseExplanation = "הדד-ליין הוא שנתיים לאחר מועד ההתחלה, מכיוון שהוא חל לפני 1.1.2026.";
+        } else {
+            // Sub-rule 2b: 2-year deadline is on or after 1.1.2026 -> 1.5 years deadline
+            baseDeadline = new Date(startDate);
+            baseDeadline.setMonth(baseDeadline.getMonth() + 18);
+            baseExplanation = "הדד-ליין הוא שנה וחצי ממועד ההתחלה. חישוב של שנתיים היה חורג מתאריך 1.1.2026, ולכן הכלל המעודכן הוא שנה וחצי.";
+        }
     }
     
     const finalDeadline = new Date(baseDeadline);
